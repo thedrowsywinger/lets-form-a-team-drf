@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # local
-    'core'
+    'core',
+    'profiles'
 ]
 
 REST_USE_JWT = True
@@ -103,6 +104,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'team.wsgi.application'
+
+AUTH_USER_MODEL = "core.CustomAuthUserModel"
 
 
 # Database

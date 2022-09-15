@@ -1,14 +1,21 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+
+from uuid import uuid4
+
+from core.managers import CustomUserManager
 
 # Create your models here.
 
 
-class Profile(models.Model):
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
-    email = models.EmailField()
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+class CustomAuthUserModel(AbstractUser):
+    id = models.IntegerField(primary_key=True, unique=True)
+    username = models.EmailField(('email address'), unique=True)
+
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = []
+
+    objects: CustomUserManager
 
     def __str__(self):
-        return str(self.first_name + self.last_name)
+        return self.username
