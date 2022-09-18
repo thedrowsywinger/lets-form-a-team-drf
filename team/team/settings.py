@@ -71,7 +71,9 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': True,
-    "SIGNING_KEY": JWT_SECRET_KEY
+    "SIGNING_KEY": JWT_SECRET_KEY,
+    "USER_ID_FIELD": "userId",  # for the custom user model
+    "USER_ID_CLAIM": "user_id",
 }
 
 # only for dev environment!, this should be changed before you push to production

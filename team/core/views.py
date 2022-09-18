@@ -61,3 +61,17 @@ class UserSignUp(APIView):
             "message": "Success"
         }
         return Response(data, status=status.HTTP_200_OK)
+
+
+class TestView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request):
+
+        print("ME IN")
+        print(request.user)
+
+        data = {
+
+        }
+        return Response(data, status=status.HTTP_200_OK)
