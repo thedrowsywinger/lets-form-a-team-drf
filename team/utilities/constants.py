@@ -13,3 +13,9 @@ account_types = {
     "MANAGER": 2,
     "EMPLOYEE": 3
 }
+
+e_account_types = {
+    1: "SUPER_ADMIN",
+    2: "MANAGER",
+    3: "EMPLOYEE"
+}
