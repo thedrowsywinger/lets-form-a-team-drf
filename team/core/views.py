@@ -9,6 +9,7 @@ from django.contrib.auth.models import Group
 
 from core.models import CustomAuthUserModel
 from profiles.models import ProfileModel
+from core.decorators import check_groups_decorator
 
 from utilities.required_fields import (
     user_sign_up_required_fields
@@ -20,20 +21,15 @@ from utilities.constants import (
     e_account_types
 )
 
-# super_admin_group, created = Group.objects.get_or_create(
-#     name=e_account_types['1'])
-# manager_group, created = Group.objects.get_or_create(name=e_account_types['2'])
-# employee_group, created = Group.objects.get_or_create(
-#     name=e_account_types['3'])
-
 
 class UserSignUp(APIView):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     def get(self, request):
         content = {'message': 'lets go'}
         return Response(content)
 
+    @check_groups_decorator
     @transaction.atomic
     def post(self, request):
         for field in user_sign_up_required_fields:
@@ -43,6 +39,7 @@ class UserSignUp(APIView):
             }
             if field not in request.data:
                 return Response(data, status=status.HTTP_406_NOT_ACCEPTABLE)
+
         auth_user = CustomAuthUserModel.objects.create_user(
             username=request.data['username'],
             email=request.data['email'],
@@ -69,7 +66,7 @@ class TestView(APIView):
     def post(self, request):
 
         print("ME IN")
-        print(request.user)
+        print(request.user.userId)
 
         data = {
 

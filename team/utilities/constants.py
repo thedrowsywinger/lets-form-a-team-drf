@@ -5,7 +5,9 @@ def field_missing_error_message(field):
 ApiResponseMessages = {
     "EMAIL_REQUIRED": "Email is a required field",
     "SUPERUSER_IS_STAFF_TRUE": "Superuser must have is_staff=True.",
-    "SUPERUSER_IS_SUPERUSER_TRUE": 'Superuser must have is_superuser=True.'
+    "SUPERUSER_IS_SUPERUSER_TRUE": 'Superuser must have is_superuser=True',
+    "UNATHORIZED_ERROR": "Current user does not have access for the task",
+    "INVALID_ACCOUNT_TYPE": "Required Account Type is invalid",
 }
 
 account_types = {
