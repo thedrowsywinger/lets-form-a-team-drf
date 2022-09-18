@@ -9,6 +9,12 @@ from django.contrib.auth.models import Group
 
 from core.models import CustomAuthUserModel
 from profiles.models import ProfileModel
+
+from core.serializers import (
+    AuthUserSerializer,
+    ProfileSerializer
+)
+
 from core.decorators import check_groups_decorator
 
 from utilities.required_fields import (
@@ -30,28 +36,31 @@ class UserSignUp(APIView):
         return Response(content)
 
     @check_groups_decorator
-    @transaction.atomic
     def post(self, request):
-        for field in user_sign_up_required_fields:
-            data = {
-                "status": status.HTTP_406_NOT_ACCEPTABLE,
-                "message": field_missing_error_message(field)
-            }
-            if field not in request.data:
-                return Response(data, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-        auth_user = CustomAuthUserModel.objects.create_user(
-            username=request.data['username'],
-            email=request.data['email'],
-            password=request.data['password']
-        )
-        profile = ProfileModel.objects.create(
-            name=request.data['name'],
-            user=auth_user
-        )
-        group, created = Group.objects.get_or_create(
-            name=e_account_types[request.data['account_type']])
-        auth_user.groups.add(group)
+        with transaction.atomic():
+            auth_user_serializer = AuthUserSerializer(data=request.data)
+            if auth_user_serializer.is_valid():
+                user_instance = auth_user_serializer.save()
+                profile_serializer = ProfileSerializer(
+                    data={"name": request.data['name'], "user": user_instance.userId})
+                if profile_serializer.is_valid():
+                    profile_serializer.save()
+                else:
+                    data = {
+                        "status": status.HTTP_400_BAD_REQUEST,
+                        "details": profile_serializer.errors
+                    }
+                    return Response(data, status=data['status'])
+                group, created = Group.objects.get_or_create(
+                    name=e_account_types[request.data['account_type']])
+                user_instance.groups.add(group)
+            else:
+                data = {
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "details": auth_user_serializer.errors
+                }
+                return Response(data, status=data['status'])
 
         data = {
             "status": status.HTTP_200_OK,
