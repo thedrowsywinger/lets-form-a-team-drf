@@ -1,4 +1,3 @@
-from cProfile import Profile
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -15,7 +14,7 @@ from core.serializers import (
     ProfileSerializer
 )
 
-from core.decorators import check_groups_decorator
+from core.decorators import user_creation_validation_decorator
 
 from utilities.required_fields import (
     user_sign_up_required_fields
@@ -35,7 +34,7 @@ class UserSignUp(APIView):
         content = {'message': 'lets go'}
         return Response(content)
 
-    @check_groups_decorator
+    @user_creation_validation_decorator
     def post(self, request):
 
         with transaction.atomic():

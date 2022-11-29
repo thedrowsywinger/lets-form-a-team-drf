@@ -48,9 +48,8 @@ def check_groups(request, ):
     return valid, data
 
 
-def check_groups_decorator(func):
+def user_creation_validation_decorator(func):
     def inner_func(view_instance, request, *args, **kwargs):
-        print("Here")
         valid, data = check_groups(request)
 
         if not valid:
